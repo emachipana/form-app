@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 export const Container = styled.div`
   width: 50%;
-  padding: 1rem;
+  padding: 1rem 1rem 0.5rem 1rem;
   background-color: white;
   border-radius: 1rem;
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .2);
@@ -23,4 +23,9 @@ export const Block = styled.div`
   z-index: 10;
   cursor: not-allowed;
   background-color: rgba(255, 255, 255, 0.5);
+`;
+
+export const Title = styled.h3`
+  font-size: 1rem;
+  font-weight: 700;
 `;
