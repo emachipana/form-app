@@ -1,6 +1,17 @@
+import { Route, Routes } from "react-router-dom";
+import { useData } from "./context/data";
+import Home from "./pages/Home";
+
 function App() {
+  const { isLoading } = useData();
+  
   return (
-    <h1>Hello world</h1>
+    isLoading
+    ? "Cargando..."
+    : 
+    <Routes>
+      <Route index path="/" element={<Home />} />
+    </Routes>
   );
 }
 

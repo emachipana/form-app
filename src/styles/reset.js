@@ -17,4 +17,8 @@ export const RESET = css`
     color: ${COLORS.gray};
     background-color: ${COLORS.grayLight};
   }
+
+  ul {
+    list-style: none;
+  }
 `;
