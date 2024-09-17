@@ -4,29 +4,34 @@ import { useData } from "../context/data";
 import { Container, Form } from "./styles";
 import { Formik } from "formik";
 import { Button } from "reactstrap";
+import { getData } from "../services/sunat";
+import { validate } from "./validate";
+import InputGroup from "../components/InputGroup";
 
 function Home() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isSecondDisabled, setIsSecondDisabled] = useState(false);
   const { questions } = useData();
 
-  const initialValues = questions.reduce((values, question) => {
+  let initialValues = questions.reduce((values, question) => {
     values[question.id] = "";
     return values;
   }, {});
 
-  const validate = (values) => {
-    const errors = {};
-
-    questions.forEach(question => {
-      if(!values[question.id]) errors[question.id] = "Este campo no puede ir vacio";
-    });
-
-    return errors;
-  }
+  initialValues = {...initialValues, rSocial: "", ruc: "", email: ""};
 
   const onSubmit = async (values) => {
     console.log(values);
+  }
+
+  const handleRucChange = async (name, event, setFieldValue) => {
+    const ruc = event.target.value;
+    setFieldValue(name, ruc);
+    
+    if(ruc.length === 11 && !isNaN(ruc * 1)) {
+      const data = await getData(ruc);
+      setFieldValue("rSocial", data.razonSocial || "");
+    }
   }
 
   return (
@@ -34,17 +39,50 @@ function Home() {
       <h1>Hello from home</h1>
       <Formik
         initialValues={initialValues}
-        validate={validate}
+        validate={(values) => validate(values, questions)}
         onSubmit={onSubmit}
       >
         {({ 
           errors, 
           touched, 
-          isValid, 
+          isValid,
+          values,
+          handleChange,
+          handleBlur,
           handleSubmit,
           setFieldValue
         }) => (
           <Form onSubmit={handleSubmit}>
+            <InputGroup
+              id="ruc"
+              label="RUC"
+              value={values.ruc}
+              placeholder="Ingresa tu ruc"
+              error={errors.ruc}
+              handleBlur={handleBlur}
+              handleChange={(e) => handleRucChange("ruc", e, setFieldValue)}
+              isTouched={touched.ruc}
+            />
+            <InputGroup
+              id="rSocial"
+              value={values.rSocial}
+              label="Razón social"
+              placeholder="Ingresa el nombre de tu empresa"
+              error={errors.rSocial}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              isTouched={touched.rSocial}
+            />
+            <InputGroup
+              id="email"
+              value={values.email}
+              label="Correo"
+              placeholder="Ingresa tu correo electronico"
+              error={errors.email}
+              handleBlur={handleBlur}
+              handleChange={handleChange}
+              isTouched={touched.email}
+            />
             {questions.map((question, index) => (
               <Question
                 key={index}

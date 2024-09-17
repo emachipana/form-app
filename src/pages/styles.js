@@ -11,10 +11,22 @@ export const Container = styled.div`
 `;
 
 export const Form = styled.form`
-  width: 100%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
+
+  @media screen and (max-width: 1000px) {
+    width: 70%;
+  }
+
+  @media screen and (max-width: 700px) {
+    width: 80%;
+  }
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
 `;

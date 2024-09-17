@@ -16,6 +16,9 @@ export const RESET = css`
     font-size: 1rem;
     color: ${COLORS.gray};
     background-color: ${COLORS.grayLight};
+    background-image: radial-gradient(rgba(0, 0, 0, 0.2) 2px, transparent 0);
+    background-size: 30px 30px;
+    background-position: -5px -5px
   }
 
   ul {
