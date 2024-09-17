@@ -3,15 +3,19 @@ import Question from "../components/Question";
 import { useData } from "../context/data";
 import { Container, Form } from "./styles";
 import { Formik } from "formik";
-import { Button } from "reactstrap";
+import { Button, Spinner } from "reactstrap";
 import { getData } from "../services/sunat";
 import { validate } from "./validate";
 import InputGroup from "../components/InputGroup";
+import apiFetch from "../services/apiFetch";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const [isSecondDisabled, setIsSecondDisabled] = useState(false);
   const { questions } = useData();
+  const navigate = useNavigate();
 
   let initialValues = questions.reduce((values, question) => {
     values[question.id] = "";
@@ -21,7 +25,30 @@ function Home() {
   initialValues = {...initialValues, rSocial: "", ruc: "", email: ""};
 
   const onSubmit = async (values) => {
-    console.log(values);
+    try {
+      setIsLoading(true);
+      const body = {
+        rSocial: values.rSocial,
+        ruc: values.ruc,
+        email: values.email
+      }
+      const company = await apiFetch("companies", { body });
+      const data = Object.entries(values).filter(val => val[0] !== "email" && val[0] !== "ruc" && val[0] !== "rSocial");
+      for(const [questionId, answer] of data) {
+        const body = {
+          questionId,
+          answer,
+          companyId: company.id
+        }
+
+        await apiFetch("answers", { body });
+      }
+      navigate("/success");
+      setIsLoading(false);
+    }catch(error) {
+      console.error(error);
+      setIsLoading(false);
+    }
   }
 
   const handleRucChange = async (name, event, setFieldValue) => {
@@ -100,10 +127,18 @@ function Home() {
             ))}
             <Button
               color="primary"
-              disabled={!isValid}
+              disabled={!isValid || isLoading}
               type="submit"
             >
-              Enviar encuesta
+              {
+                isLoading
+                ? <>
+                    <Spinner size="sm" />
+                    {" "}
+                    Enviando...
+                  </>
+                : "Enviar encuesta" 
+              }
             </Button>
           </Form>
         )}
