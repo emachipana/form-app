@@ -11,7 +11,8 @@ const DataProvider = ({ children }) => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const questions = await apiFetch("questions");
+        let questions = await apiFetch("questions");
+        questions = questions.sort((a, b) => a.position - b.position);
         setQuestions(questions);
         setIsLoading(false);
       }catch(error) {
