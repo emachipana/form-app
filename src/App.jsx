@@ -12,6 +12,7 @@ function App() {
     : 
     <Routes>
       <Route index path="/" element={<Home />} />
+      <Route path="/success" element={<h1>Gracias por responder. Tu respuesta se ha registrado con exito!!</h1>} />
     </Routes>
   );
 }
